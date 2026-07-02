@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'Espresso Premium | Luxury Café Experience</title>
+  
+  <meta name="description" content="Experience architectural minimalism and precision-crafted specialty coffee at L'Espresso Premium.">
+  <meta name="author" content="L'Espresso Corporate">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            espresso: '#1A120B',
+            cream: '#F8F5F0',
+            latte: '#D7CCC8',
+            gold: '#C9A227',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar Override */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1A120B;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C9A227;
+      border-radius: 3px;
+    }
+
+    /* CSS Film Grain Overlay */
+    .grain-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      content: "";
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 9999;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Smooth Custom Cursor Styles */
+    .custom-cursor {
+      width: 8px;
+      height: 8px;
+      background-color: #C9A227;
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10000;
+      mix-blend-mode: difference;
+      transition: width 0.2s, height 0.2s, background-color 0.2s;
+    }
+    .custom-cursor-ring {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(201, 162, 39, 0.4);
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), height 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s;
+    }
+    
+    /* Text indicator inside modern expanded cursor */
+    .cursor-text {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: #1A120B;
+      position: absolute;
+      opacity: 0;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    /* Lenis Smooth Scroll Configuration Mechanics */
+    html.lenis {
+      height: auto;
+    }
+    .lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+    .lenis-stopped {
+      overflow: hidden;
+    }
+
+    /* Dynamic Menu Filter System Transition Adjustments */
+    .menu-item {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .menu-item.hidden-item {
+      display: none;
+      opacity: 0;
+      transform: scale(0.92) translateY(15px);
+    }
+
+    /* SVG Clip-path mask initialization for cinematic image reveals */
+    .reveal-mask {
+      clip-path: inset(0% 100% 0% 0%);
+    }
+
+    /* Navigation Hover Effects */
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 1px;
+      bottom: -4px;
+      left: 0;
+      background-color: #C9A227;
+      transform-origin: bottom right;
+      transition: transform 0.4s ease-out;
+    }
+    .nav-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: bottom left;
+    }
+  </style>
+</head>
+<body class="bg-cream text-espresso font-sans antialiased overflow-x-hidden selection:bg-gold selection:text-espresso">
+
+  <div class="grain-overlay"></div>
+
+  <div class="custom-cursor hidden md:block" id="js-cursor"></div>
+  <div class="custom-cursor-ring hidden md:block" id="js-cursor-ring">
+    <span class="cursor-text" id="js-cursor-text"></span>
+  </div>
+
+  <div id="preloader" class="fixed inset-0 bg-espresso z-[99999] flex flex-col justify-between p-8 md:p-16 text-cream">
+    <div class="flex justify-between items-center w-full">
+      <span class="font-serif italic text-lg tracking-wider text-latte">L'Espresso Premium</span>
+      <span class="text-xs uppercase tracking-widest text-gold opacity-80">Milan • Tokyo • Paris</span>
+    </div>
+    
+    <div class="flex flex-col items-center justify-center my-auto space-y-6">
+      <div class="relative w-24 h-24">
+        <svg class="w-full h-full stroke-gold stroke-[1.5] fill-none overflow-visible" viewBox="0 0 24 24">
+          <path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="6" y1="2" x2="6" y2="4" stroke-linecap="round"/>
+          <line x1="10" y1="2" x2="10" y2="4" stroke-linecap="round"/>
+          <line x1="14" y1="2" x2="14" y2="4" stroke-linecap="round"/>
+        </svg>
+        <div id="preloader-liquid" class="absolute bottom-1 left-[10%] right-[32%] top-full bg-gold opacity-20 transition-all duration-100 rounded-b-md"></div>
+      </div>
+      <h2 class="font-serif text-3xl md:text-4xl tracking-widest font-light text-center uppercase">The Art Of Extraction</h2>
+    </div>
+
+    <div class="flex justify-between items-end w-full">
+      <div class="text-xs uppercase tracking-widest text-latte max-w-xs hidden md:block">
+        Crafting modern sensory architecture across micro-lot roasting.
+      </div>
+      <div class="font-serif text-7xl md:text-9xl font-light text-gold" id="preloader-counter">00</div>
+    </div>
+  </div>
+
+  <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 border-b border-transparent py-6">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex justify-between items-center">
+      
+      <a href="#" class="flex flex-col group focus:outline-none" aria-label="L'Espresso Premium Home">
+        <span class="font-serif text-xl md:text-2xl font-semibold tracking-widest uppercase transition-colors duration-300 group-hover:text-gold">L'Espresso</span>
+        <span class="text-[9px] tracking-[0.4em] uppercase text-gold -mt-1 pl-0.5">Premium</span>
+      </a>
+
+      <nav class="hidden md:flex items-center space-x-12" aria-label="Main Navigation">
+        <a href="#about" class="nav-link relative text-xs uppercase tracking-widest font-medium text-espresso focus:outline-none focus:text-gold">Our Story</a>
+        <a href="#menu" class="nav-link relative text-xs uppercase tracking-widest font-medium text-espresso focus:outline-none focus:text-gold">The Menu</a>
+        <a href="#gallery" class="nav-link relative text-xs uppercase tracking-widest font-medium text-espresso focus:outline-none focus:text-gold">Gallery</a>
+        <a href="#reserve" class="nav-link relative text-xs uppercase tracking-widest font-medium text-espresso focus:outline-none focus:text-gold">Experience</a>
+      </nav>
+
+      <div class="hidden md:block">
+        <a href="#reserve" class="magnetic bg-espresso text-cream hover:text-espresso text-xs uppercase tracking-widest font-semibold px-6 py-3 border border-espresso hover:bg-transparent transition-all duration-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-gold" aria-label="Reserve a Table Experience">
+          Reserve Table
+        </a>
+      </div>
+
+      <button class="md:hidden flex flex-col space-y-1.5 focus:outline-none" id="mobile-menu-toggle" aria-expanded="false" aria-label="Toggle Navigation Menu">
+        <span class="w-6 h-0.5 bg-espresso transition-transform duration-300" id="line1"></span>
+        <span class="w-6 h-0.5 bg-espresso transition-opacity duration-300" id="line2"></span>
+        <span class="w-4 h-0.5 bg-espresso self-end transition-transform duration-300" id="line3"></span>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-menu" class="fixed inset-0 bg-espresso z-40 flex flex-col justify-center items-center space-y-8 px-6 transform translate-y-full transition-transform duration-500 ease-in-out md:hidden">
+    <a href="#about" class="mobile-nav-link font-serif text-3xl text-cream hover:text-gold transition-colors">Our Story</a>
+    <a href="#menu" class="mobile-nav-link font-serif text-3xl text-cream hover:text-gold transition-colors">The Menu</a>
+    <a href="#gallery" class="mobile-nav-link font-serif text-3xl text-cream hover:text-gold transition-colors">Gallery</a>
+    <a href="#reserve" class="mobile-nav-link font-serif text-3xl text-cream hover:text-gold transition-colors">Book a Table</a>
+  </div>
+
+  <main>
+    <section id="hero" class="relative min-h-screen flex items-center bg-cream overflow-hidden px-6 md:px-12 pt-24">
+      <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 z-10 space-y-6">
+          <span class="text-xs uppercase tracking-[0.3em] font-semibold text-gold block">Est. 2026 / Specialty Roasters</span>
+          <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.05] text-espresso uppercase split-text" id="hero-title">
+            Crafted With <br><span class="italic font-normal text-gold">Passion.</span> <br>Served With Love.
+          </h1>
+          <p class="text-sm md:text-base text-espresso/80 max-w-md font-light leading-relaxed pt-2">
+            An award-winning architectural coffee immersion project matching micro-lot single origins with Scandinavian design precision.
+          </p>
+          <div class="pt-4 flex items-center space-x-6">
+            <a href="#menu" class="magnetic bg-espresso text-cream hover:bg-gold hover:text-espresso text-xs uppercase tracking-widest font-semibold px-8 py-4 transition-colors duration-300 shadow-lg focus:outline-none">
+              Explore Our Brews
+            </a>
+            <a href="#about" class="group flex items-center space-x-3 text-xs uppercase tracking-widest font-semibold text-espresso focus:outline-none">
+              <span>Our Legacy</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-gold transform group-hover:translate-x-2 transition-transform duration-300"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 relative w-full h-[50vh] lg:h-[75vh] flex justify-center items-center">
+          <div class="absolute w-72 h-96 md:w-80 md:h-[28rem] bg-espresso overflow-hidden shadow-2xl rounded-sm group cursor-pointer" id="hero-image-container">
+            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop" 
+                 alt="Premium Specialty Espresso Extraction Showcase" 
+                 class="w-full h-full object-cover scale-110 opacity-90 group-hover:scale-105 transition-transform duration-700" 
+                 id="hero-bg-img">
+            <div class="absolute inset-4 border border-gold/20 pointer-events-none"></div>
+          </div>
+          
+          <div class="absolute -bottom-6 -left-6 md:left-4 w-44 h-44 bg-[#EADBC8] p-4 hidden sm:flex flex-col justify-between shadow-xl border border-white/20" id="hero-floating-card">
+            <span class="font-serif text-xs italic text-espresso/60">Tasting Notes</span>
+            <div>
+              <h4 class="font-serif text-lg font-bold text-espresso uppercase">Geisha Roast</h4>
+              <p class="text-[10px] uppercase tracking-widest text-gold font-semibold">Bergamot & Jasmine</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center space-y-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300">
+        <span class="text-[9px] uppercase tracking-[0.3em] font-medium text-espresso">Scroll to Explore</span>
+        <div class="w-[1px] h-12 bg-espresso/20 relative overflow-hidden">
+          <div id="scroll-line-anim" class="absolute top-0 left-0 w-full h-1/2 bg-gold"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="py-24 md:py-32 bg-espresso text-cream px-6 md:px-12 relative overflow-hidden">
+      <div class="absolute right-0 bottom-0 text-[18vw] font-serif font-bold text-cream/[0.02] select-none pointer-events-none leading-none transform translate-y-12">
+        ESPRESSO
+      </div>
+
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        
+        <div class="lg:col-span-6 relative">
+          <div class="reveal-mask overflow-hidden aspect-[4/5] md:aspect-[3/4] bg-latte relative group cursor-pointer shadow-2xl" id="about-mask-trigger">
+            <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=1200&auto=format&fit=crop" 
+                 alt="Minimalist Specialty Café Interior Counter" 
+                 class="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000">
+            <div class="absolute inset-0 bg-gradient-to-t from-espresso via-transparent to-transparent opacity-60"></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 space-y-8 z-10">
+          <div class="space-y-4">
+            <span class="text-xs uppercase tracking-[0.3em] font-semibold text-gold block">The Philosophy</span>
+            <h2 class="font-serif text-4xl md:text-5xl font-light uppercase tracking-tight leading-tight">
+              Where Precision Roasting Meets <span class="italic font-normal text-gold text-3xl md:text-4xl block md:inline">Architectural Minimalism</span>
+            </h2>
+          </div>
+          
+          <p class="text-sm md:text-base text-latte font-light leading-relaxed">
+            We source exclusively from single-estate biodynamic farms above 1,800 meters. Every micro-lot is roasted inside custom modified cast-iron drums, controlling airflow down to the millisecond to preserve the delicate floral esters and native origin characteristics.
+          </p>
+
+          <p class="text-sm md:text-base text-latte font-light leading-relaxed">
+            Our spaces reflect our brew guidelines: clean, uncompromised, balanced, and intended to cultivate intentional moments of tactile connection.
+          </p>
+
+          <div class="grid grid-cols-2 gap-8 pt-6 border-t border-cream/10" id="stats-counter-trigger">
+            <div class="space-y-1">
+              <div class="font-serif text-4xl md:text-5xl font-light text-gold flex items-center">
+                <span class="js-counter-val" data-target="25">0</span><span>+</span>
+              </div>
+              <p class="text-[10px] uppercase tracking-widest text-latte font-semibold opacity-80">Global Sourcing Awards</p>
+            </div>
+            <div class="space-y-1">
+              <div class="font-serif text-4xl md:text-5xl font-light text-gold flex items-center">
+                <span class="js-counter-val" data-target="100">0</span><span>K+</span>
+              </div>
+              <p class="text-[10px] uppercase tracking-widest text-latte font-semibold opacity-80">Connoisseurs Served</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="menu" class="py-24 md:py-32 bg-cream px-6 md:px-12">
+      <div class="max-w-7xl mx-auto space-y-16">
+        
+        <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-espresso/10 pb-8">
+          <div class="space-y-2">
+            <span class="text-xs uppercase tracking-[0.3em] font-semibold text-gold block">The Curated Standard</span>
+            <h2 class="font-serif text-4xl md:text-5xl uppercase tracking-tight font-light">The Extraction Menu</h2>
+          </div>
+          
+          <div class="flex flex-wrap gap-2 md:gap-4" role="tablist" aria-label="Menu Item Categories">
+            <button class="menu-tab-btn active px-5 py-2 text-xs uppercase tracking-widest font-semibold border border-espresso bg-espresso text-cream transition-colors duration-300 focus:outline-none" data-filter="all" role="tab" aria-selected="true">All Collections</button>
+            <button class="menu-tab-btn px-5 py-2 text-xs uppercase tracking-widest font-semibold border border-espresso/20 text-espresso hover:border-espresso transition-colors duration-300 focus:outline-none" data-filter="espresso" role="tab" aria-selected="false">Espresso</button>
+            <button class="menu-tab-btn px-5 py-2 text-xs uppercase tracking-widest font-semibold border border-espresso/20 text-espresso hover:border-espresso transition-colors duration-300 focus:outline-none" data-filter="cold-brew" role="tab" aria-selected="false">Cold Extraction</button>
+            <button class="menu-tab-btn px-5 py-2 text-xs uppercase tracking-widest font-semibold border border-espresso/20 text-espresso hover:border-espresso transition-colors duration-300 focus:outline-none" data-filter="desserts" role="tab" aria-selected="false">Pâtisserie</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-grid-container">
+          
+          <div class="menu-item bg-white border border-espresso/5 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer hover-card-trigger" data-category="espresso" data-tilt data-tilt-max="6" data-tilt-speed="800" data-tilt-perspective="1000">
+            <div class="space-y-4">
+              <div class="overflow-hidden aspect-[4/3] bg-cream relative mb-4">
+                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop" alt="Geisha Origin Espresso Shot" class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-espresso text-cream text-[9px] uppercase tracking-widest px-2 py-1">Micro-Lot</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold uppercase tracking-wide text-espresso">Geisha Cortado</h3>
+                <span class="font-serif text-lg font-semibold text-gold">$8.50</span>
+              </div>
+              <p class="text-xs text-espresso/70 font-light leading-relaxed">
+                Single-origin Colombian Geisha, double pulled over organic textured heirloom milk with dense notes of clean jasmine blossom.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-6 mt-6 border-t border-espresso/5">
+              <div class="flex items-center space-x-1 text-gold">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <span class="text-[10px] text-espresso/60 font-semibold pl-1">(4.9)</span>
+              </div>
+              <span class="text-[10px] uppercase tracking-widest text-gold font-bold">Order</span>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white border border-espresso/5 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer hover-card-trigger" data-category="cold-brew" data-tilt data-tilt-max="6" data-tilt-speed="800" data-tilt-perspective="1000">
+            <div class="space-y-4">
+              <div class="overflow-hidden aspect-[4/3] bg-cream relative mb-4">
+                <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=600&auto=format&fit=crop" alt="Nitrogen Infused Cold Extraction" class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-gold text-espresso text-[9px] uppercase tracking-widest font-bold px-2 py-1">24Hr Steep</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold uppercase tracking-wide text-espresso">Kyoto Nitro Cold Brew</h3>
+                <span class="font-serif text-lg font-semibold text-gold">$9.00</span>
+              </div>
+              <p class="text-xs text-espresso/70 font-light leading-relaxed">
+                Slow drip mountain water extraction processed via historical Japanese towers, charged with absolute pure nitrogen gas molecules.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-6 mt-6 border-t border-espresso/5">
+              <div class="flex items-center space-x-1 text-gold">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5"></i>
+                <span class="text-[10px] text-espresso/60 font-semibold pl-1">(4.7)</span>
+              </div>
+              <span class="text-[10px] uppercase tracking-widest text-gold font-bold">Order</span>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white border border-espresso/5 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer hover-card-trigger" data-category="desserts" data-tilt data-tilt-max="6" data-tilt-speed="800" data-tilt-perspective="1000">
+            <div class="space-y-4">
+              <div class="overflow-hidden aspect-[4/3] bg-cream relative mb-4">
+                <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=600&auto=format&fit=crop" alt="Artisanal French Mille-Feuille pastry" class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-espresso text-cream text-[9px] uppercase tracking-widest px-2 py-1">Artisanal</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold uppercase tracking-wide text-espresso">Espresso Mille-Feuille</h3>
+                <span class="font-serif text-lg font-semibold text-gold">$12.00</span>
+              </div>
+              <p class="text-xs text-espresso/70 font-light leading-relaxed">
+                72-hour caramelized puff pastry sheets structured with architectural Madagascar vanilla bean paste and house origin reductions.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-6 mt-6 border-t border-espresso/5">
+              <div class="flex items-center space-x-1 text-gold">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <span class="text-[10px] text-espresso/60 font-semibold pl-1">(5.0)</span>
+              </div>
+              <span class="text-[10px] uppercase tracking-widest text-gold font-bold">Order</span>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white border border-espresso/5 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer hover-card-trigger" data-category="espresso" data-tilt data-tilt-max="6" data-tilt-speed="800" data-tilt-perspective="1000">
+            <div class="space-y-4">
+              <div class="overflow-hidden aspect-[4/3] bg-cream relative mb-4">
+                <img src="https://images.unsplash.com/photo-1510972527409-bcb52d4d8b21?q=80&w=600&auto=format&fit=crop" alt="Pure Espresso Shot Extraction" class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-espresso text-cream text-[9px] uppercase tracking-widest px-2 py-1">Origin Pure</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold uppercase tracking-wide text-espresso">Bourbon Straight Shot</h3>
+                <span class="font-serif text-lg font-semibold text-gold">$6.00</span>
+              </div>
+              <p class="text-xs text-espresso/70 font-light leading-relaxed">
+                Pulled through customized pre-infusion pressure profiling profiles. Thick, syrupy body emphasizing complex dark cacao and citrus zest notes.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-6 mt-6 border-t border-espresso/5">
+              <div class="flex items-center space-x-1 text-gold">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-gold/30"></i>
+                <span class="text-[10px] text-espresso/60 font-semibold pl-1">(4.6)</span>
+              </div>
+              <span class="text-[10px] uppercase tracking-widest text-gold font-bold">Order</span>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white border border-espresso/5 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer hover-card-trigger" data-category="cold-brew" data-tilt data-tilt-max="6" data-tilt-speed="800" data-tilt-perspective="1000">
+            <div class="space-y-4">
+              <div class="overflow-hidden aspect-[4/3] bg-cream relative mb-4">
+                <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=600&auto=format&fit=crop" alt="Affogato Luxury Espresso Presentation" class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-gold text-espresso text-[9px] uppercase tracking-widest font-bold px-2 py-1">Signature</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold uppercase tracking-wide text-espresso">Cold-Pressed Affogato</h3>
+                <span class="font-serif text-lg font-semibold text-gold">$10.50</span>
+              </div>
+              <p class="text-xs text-espresso/70 font-light leading-relaxed">
+                Raw dynamic vanilla bean gelato block sub-submerged in slow cold-extracted concentrate and dusted with flakes of direct-trade sea salt.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-6 mt-6 border-t border-espresso/5">
+              <div class="flex items-center space-x-1 text-gold">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <span class="text-[10px] text-espresso/60 font-semibold pl-1">(4.9)</span>
+              </div>
+              <span class="text-[10px] uppercase tracking-widest text-gold font-bold">Order</span>
+            </div>
+          </div>
+
+          <div class="menu-item bg-white border border-espresso/5 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer hover-card-trigger" data-category="desserts" data-tilt data-tilt-max="6" data-tilt-speed="800" data-tilt-perspective="1000">
+            <div class="space-y-4">
+              <div class="overflow-hidden aspect-[4/3] bg-cream relative mb-4">
+                <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=600&auto=format&fit=crop" alt="Premium Croissant Bakery Showcase" class="w-full h-full object-cover">
+                <span class="absolute top-3 right-3 bg-espresso text-cream text-[9px] uppercase tracking-widest px-2 py-1">Limited</span>
+              </div>
+              <div class="flex justify-between items-start">
+                <h3 class="font-serif text-xl font-semibold uppercase tracking-wide text-espresso">Pistachio Croissant</h3>
+                <span class="font-serif text-lg font-semibold text-gold">$8.00</span>
+              </div>
+              <p class="text-xs text-espresso/70 font-light leading-relaxed">
+                House-laminated butter dough pastry filled to capacity with 100% Sicilian green pistachio stone-ground cream paste filling.
+              </p>
+            </div>
+            <div class="flex items-center justify-between pt-6 mt-6 border-t border-espresso/5">
+              <div class="flex items-center space-x-1 text-gold">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-gold"></i>
+                <i data-lucide="star" class="w-3.5 h-3.5 text-gold/30"></i>
+                <span class="text-[10px] text-espresso/60 font-semibold pl-1">(4.8)</span>
+              </div>
+              <span class="text-[10px] uppercase tracking-widest text-gold font-bold">Order</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="bg-espresso overflow-hidden h-screen flex items-center relative select-none">
+      <div class="absolute top-12 left-6 md:left-12 z-20 space-y-2">
+        <span class="text-xs uppercase tracking-[0.3em] font-semibold text-gold block">The Architecture</span>
+        <h2 class="font-serif text-3xl md:text-4xl text-cream uppercase font-light">Visual Extractions</h2>
+      </div>
+
+      <div id="gallery-pin-track" class="flex items-center space-x-8 px-6 md:px-12 whitespace-nowrap will-change-transform">
+        
+        <div class="w-[75vw] md:w-[35vw] shrink-0 aspect-[4/5] bg-neutral-900 relative group overflow-hidden shadow-2xl hover-gallery-trigger">
+          <img src="https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=1000&auto=format&fit=crop" 
+               alt="Luxury Minimalism Coffee Pour Detail" 
+               class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-1000">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-8 flex flex-col justify-end">
+            <h4 class="font-serif text-2xl text-cream uppercase">The Pour Routine</h4>
+            <p class="text-xs text-gold uppercase tracking-widest">Precision 1:16 Ratio Geometry</p>
+          </div>
+        </div>
+
+        <div class="w-[75vw] md:w-[35vw] shrink-0 aspect-[4/5] bg-neutral-900 relative group overflow-hidden shadow-2xl hover-gallery-trigger">
+          <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1000&auto=format&fit=crop" 
+               alt="Tactile Senses Conceptual Lifestyle" 
+               class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-1000">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-8 flex flex-col justify-end">
+            <h4 class="font-serif text-2xl text-cream uppercase">Tactile Moments</h4>
+            <p class="text-xs text-gold uppercase tracking-widest">Sensing Spatial Boundaries</p>
+          </div>
+        </div>
+
+        <div class="w-[75vw] md:w-[35vw] shrink-0 aspect-[4/5] bg-neutral-900 relative group overflow-hidden shadow-2xl hover-gallery-trigger">
+          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1000&auto=format&fit=crop" 
+               alt="Specialty Coffee Counter Design" 
+               class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-1000">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-8 flex flex-col justify-end">
+            <h4 class="font-serif text-2xl text-cream uppercase">The Milan Lab</h4>
+            <p class="text-xs text-gold uppercase tracking-widest">Architectural Clean Lines</p>
+          </div>
+        </div>
+
+        <div class="w-[75vw] md:w-[35vw] shrink-0 aspect-[4/5] bg-neutral-900 relative group overflow-hidden shadow-2xl hover-gallery-trigger">
+          <img src="https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?q=80&w=1000&auto=format&fit=crop" 
+               alt="Aesthetic Pouring Concept" 
+               class="w-full h-full object-cover filter brightness-90 group-hover:scale-105 transition-transform duration-1000">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-8 flex flex-col justify-end">
+            <h4 class="font-serif text-2xl text-cream uppercase">Micro-Lot Storage</h4>
+            <p class="text-xs text-gold uppercase tracking-widest">Optimized Botanical Storage</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="reserve" class="py-24 md:py-32 bg-cream px-6 md:px-12 relative">
+      <div class="max-w-3xl mx-auto space-y-12">
+        
+        <div class="text-center space-y-3">
+          <span class="text-xs uppercase tracking-[0.3em] font-semibold text-gold block">Secured Table Allocations</span>
+          <h2 class="font-serif text-4xl md:text-5xl uppercase tracking-tight font-light text-espresso">Reserve Your Experience</h2>
+          <p class="text-xs md:text-sm text-espresso/70 max-w-md mx-auto font-light">
+            Due to our architectural seating density guidelines, reservations are highly recommended for formal tasting flights.
+          </p>
+        </div>
+
+        <form id="reservation-form" class="space-y-8 pt-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div class="relative z-0 w-full group">
+              <input type="text" name="name" id="form-name" class="block py-3 px-0 w-full text-sm text-espresso bg-transparent border-0 border-b border-espresso/20 appearance-none focus:outline-none focus:ring-0 focus:border-gold peer" placeholder=" " required aria-required="true" />
+              <label for="form-name" class="peer-focus:font-medium absolute text-xs uppercase tracking-widest text-espresso/50 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-gold">Full Name</label>
+            </div>
+
+            <div class="relative z-0 w-full group">
+              <input type="email" name="email" id="form-email" class="block py-3 px-0 w-full text-sm text-espresso bg-transparent border-0 border-b border-espresso/20 appearance-none focus:outline-none focus:ring-0 focus:border-gold peer" placeholder=" " required aria-required="true" />
+              <label for="form-email" class="peer-focus:font-medium absolute text-xs uppercase tracking-widest text-espresso/50 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-gold">Email Address</label>
+            </div>
+
+            <div class="relative z-0 w-full group">
+              <input type="date" name="date" id="form-date" class="block py-3 px-0 w-full text-sm text-espresso bg-transparent border-0 border-b border-espresso/20 appearance-none focus:outline-none focus:ring-0 focus:border-gold peer" placeholder=" " required aria-required="true" />
+              <label for="form-date" class="peer-focus:font-medium absolute text-xs uppercase tracking-widest text-espresso/50 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-gold">Preferred Date</label>
+            </div>
+
+            <div class="relative z-0 w-full group">
+              <select name="guests" id="form-guests" class="block py-3 px-0 w-full text-sm text-espresso bg-transparent border-0 border-b border-espresso/20 appearance-none focus:outline-none focus:ring-0 focus:border-gold peer" required aria-required="true">
+                <option value="" disabled selected hidden></option>
+                <option value="1" class="text-espresso">1 Connoisseur</option>
+                <option value="2" class="text-espresso">2 Connoisseurs</option>
+                <option value="4" class="text-espresso">4 Table Lounge</option>
+                <option value="6" class="text-espresso">6 Tasting Flight Room</option>
+              </select>
+              <label for="form-guests" class="peer-focus:font-medium absolute text-xs uppercase tracking-widest text-espresso/50 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-gold">Guest Count</label>
+            </div>
+
+          </div>
+
+          <div class="relative z-0 w-full group">
+            <textarea name="notes" id="form-notes" rows="2" class="block py-3 px-0 w-full text-sm text-espresso bg-transparent border-0 border-b border-espresso/20 appearance-none focus:outline-none focus:ring-0 focus:border-gold peer" placeholder=" "></label></textarea>
+            <label for="form-notes" class="peer-focus:font-medium absolute text-xs uppercase tracking-widest text-espresso/50 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 peer-focus:text-gold">Dietary Directives or Specific Origin Requests</label>
+          </div>
+
+          <div class="text-center pt-4">
+            <button type="submit" class="magnetic bg-espresso text-cream hover:bg-gold hover:text-espresso text-xs uppercase tracking-widest font-semibold px-12 py-4 transition-colors duration-300 shadow-md focus:outline-none w-full md:w-auto">
+              Request Allocation
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-espresso text-cream pt-24 pb-12 px-6 md:px-12 border-t border-cream/5 relative z-10">
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+        
+        <div class="md:col-span-4 space-y-6">
+          <div class="flex flex-col">
+            <span class="font-serif text-3xl font-semibold tracking-widest uppercase">L'Espresso</span>
+            <span class="text-xs tracking-[0.4em] uppercase text-gold -mt-1 pl-0.5">Premium</span>
+          </div>
+          <p class="text-xs text-latte font-light leading-relaxed max-w-xs">
+            A precise architectural sanctuary exploring roasted beans, organic geometric environments, and deep human sensory curation.
+          </p>
+        </div>
+
+        <div class="md:col-span-4 space-y-4">
+          <h4 class="text-xs uppercase tracking-widest font-semibold text-gold">The Laboratories</h4>
+          <ul class="space-y-2 text-xs text-latte font-light">
+            <li><p class="hover:text-gold transition-colors">Milan — Via della Spiga 14</p></li>
+            <li><p class="hover:text-gold transition-colors">Tokyo — Aoyama District 3-5</p></li>
+            <li><p class="hover:text-gold transition-colors">Paris — Rue de l'Université 7</p></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-4 space-y-4">
+          <h4 class="text-xs uppercase tracking-widest font-semibold text-gold">The Extraction Journal</h4>
+          <p class="text-xs text-latte font-light">Subscribe to gain exclusive direct allocation access to limited micro-lot releases.</p>
+          
+          <form id="newsletter-form" class="relative flex items-center pt-2">
+            <input type="email" placeholder="Your Email Address" class="bg-transparent border-b border-cream/20 text-xs w-full py-2 pr-10 focus:outline-none focus:border-gold transition-colors text-cream placeholder-cream/30" required aria-label="Newsletter Email Input">
+            <button type="submit" class="absolute right-0 top-2 text-cream hover:text-gold transition-colors focus:outline-none" aria-label="Submit Newsletter Form">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+            <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gold scale-x-0 transition-transform duration-500 origin-left" id="newsletter-line"></div>
+          </form>
+        </div>
+
+      </div>
+
+      <div class="pt-8 border-t border-cream/10 flex flex-col md:flex-row justify-between items-center gap-6">
+        
+        <div class="flex items-center space-x-6">
+          <a href="#" class="magnetic text-latte hover:text-gold transition-colors focus:outline-none" aria-label="Follow us on Instagram"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+          <a href="#" class="magnetic text-latte hover:text-gold transition-colors focus:outline-none" aria-label="Follow us on YouTube"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+          <a href="#" class="magnetic text-latte hover:text-gold transition-colors focus:outline-none" aria-label="Follow us on Facebook"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+        </div>
+
+        <p class="text-[10px] uppercase tracking-widest text-latte/60 font-light text-center md:text-left order-last md:order-none">
+          &copy; 2026 L'Espresso Premium. All Rights Reserved. Engineered for excellence.
+        </p>
+
+        <button id="back-to-top-btn" class="magnetic flex items-center space-x-2 text-[10px] uppercase tracking-widest font-semibold text-gold focus:outline-none group">
+          <span>Back To Top</span>
+          <i data-lucide="chevron-up" class="w-3.5 h-3.5 transform group-hover:-translate-y-1 transition-transform duration-300"></i>
+        </button>
+
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast-notification" class="fixed bottom-6 right-6 bg-espresso border border-gold text-cream px-6 py-4 shadow-2xl z-[99999] flex items-center space-x-4 opacity-0 pointer-events-none transform translate-y-4 transition-all duration-500">
+    <div class="p-1 bg-gold/10 rounded-full text-gold">
+      <i data-lucide="check-circle" class="w-5 h-5"></i>
+    </div>
+    <div>
+      <h5 class="text-xs uppercase tracking-widest font-bold text-gold" id="toast-title">Request Transmitted</h5>
+      <p class="text-[11px] text-latte font-light mt-0.5" id="toast-message">Your table allocation process is initializing.</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    // Initialize Structural Component Lucide Icons Immediately
+    lucide.createIcons();
+
+    // REGISTER GSAP CORE PLUGINS
+    gsap.registerPlugin(ScrollTrigger);
+
+    // LENIS SMOOTH ROBUST SCROLL INITIALIZATION
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    // Synchronize Lenis custom loop directly with GSAP ScrollTrigger updates
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+
+    // CORE SITE UI NAVIGATION DRAWER MANAGER
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const line1 = document.getElementById('line1');
+    const line2 = document.getElementById('line2');
+    const line3 = document.getElementById('line3');
+    let isMenuOpen = false;
+
+    mobileMenuToggle.addEventListener('click', () => {
+      isMenuOpen = !isMenuOpen;
+      mobileMenuToggle.setAttribute('aria-expanded', isMenuOpen);
+      if (isMenuOpen) {
+        mobileMenu.classList.remove('translate-y-full');
+        line1.style.transform = 'translateY(8px) rotate(45deg)';
+        line2.style.opacity = '0';
+        line3.style.transform = 'translateY(-8px) rotate(-45deg)';
+        lenis.stop();
+      } else {
+        mobileMenu.classList.add('translate-y-full');
+        line1.style.transform = 'none';
+        line2.style.opacity = '1';
+        line3.style.transform = 'none';
+        lenis.start();
+      }
+    });
+
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('translate-y-full');
+        line1.style.transform = 'none';
+        line2.style.opacity = '1';
+        line3.style.transform = 'none';
+        isMenuOpen = false;
+        lenis.start();
+      });
+    });
+
+    // CUSTOM CURSOR TRACKING MANAGEMENT SYSTEM MECHANICS
+    const cursorBall = document.getElementById('js-cursor');
+    const cursorRing = document.getElementById('js-cursor-ring');
+    const cursorText = document.getElementById('js-cursor-text');
+
+    let mouseX = 0, mouseY = 0;
+    let ballX = 0, ballY = 0;
+    let ringX = 0, ringY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Custom GSAP-driven cursor loop with smooth magnetic trailing effect
+    gsap.ticker.add(() => {
+      // Linear Interpolation equations for varying lag feel dynamics
+      ballX += (mouseX - ballX) * 0.3;
+      ballY += (mouseY - ballY) * 0.3;
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+
+      gsap.set(cursorBall, { x: ballX, y: ballY });
+      gsap.set(cursorRing, { x: ringX, y: ringY });
+    });
+
+    // Hover transformations matrix configurations for link and button components
+    const interactiveSelectors = 'a, button, .menu-tab-btn, [role="tab"]';
+    document.querySelectorAll(interactiveSelectors).forEach(element => {
+      element.addEventListener('mouseenter', () => {
+        cursorBall.style.transform = 'translate(-50%, -50%) scale(4)';
+        cursorBall.style.backgroundColor = '#C9A227';
+        cursorRing.style.width = '60px';
+        cursorRing.style.height = '60px';
+        cursorRing.style.borderColor = '#C9A227';
+      });
+      element.addEventListener('mouseleave', () => {
+        cursorBall.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursorBall.style.backgroundColor = '#C9A227';
+        cursorRing.style.width = '40px';
+        cursorRing.style.height = '40px';
+        cursorRing.style.borderColor = 'rgba(201, 162, 39, 0.4)';
+      });
+    });
+
+    // Card Specific Morphing Transformations showing text overlays
+    document.querySelectorAll('.hover-card-trigger').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        cursorBall.style.transform = 'translate(-50%, -50%) scale(0)';
+        cursorRing.style.width = '75px';
+        cursorRing.style.height = '75px';
+        cursorRing.style.backgroundColor = '#C9A227';
+        cursorRing.style.borderColor = '#C9A227';
+        cursorText.innerText = "ORDER";
+        cursorText.style.opacity = '1';
+      });
+      card.addEventListener('mouseleave', () => {
+        cursorBall.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursorRing.style.width = '40px';
+        cursorRing.style.height = '40px';
+        cursorRing.style.backgroundColor = 'transparent';
+        cursorRing.style.borderColor = 'rgba(201, 162, 39, 0.4)';
+        cursorText.style.opacity = '0';
+      });
+    });
+
+    // Gallery Specific Morphing Transformations showing text overlays
+    document.querySelectorAll('.hover-gallery-trigger').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        cursorBall.style.transform = 'translate(-50%, -50%) scale(0)';
+        cursorRing.style.width = '85px';
+        cursorRing.style.height = '85px';
+        cursorRing.style.backgroundColor = '#F8F5F0';
+        cursorRing.style.borderColor = '#F8F5F0';
+        cursorText.innerText = "EXPLORE";
+        cursorText.style.opacity = '1';
+      });
+      item.addEventListener('mouseleave', () => {
+        cursorBall.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursorRing.style.width = '40px';
+        cursorRing.style.height = '40px';
+        cursorRing.style.backgroundColor = 'transparent';
+        cursorRing.style.borderColor = 'rgba(201, 162, 39, 0.4)';
+        cursorText.style.opacity = '0';
+      });
+    });
+
+    // Auto-hide elements on touch interfaces
+    window.addEventListener('touchstart', () => {
+      cursorBall.style.display = 'none';
+      cursorRing.style.display = 'none';
+    });
+
+
+    // STAGE PRELOADER ANIMATION ENGINE EXECUTION TIMELINE
+    const preloaderCounter = document.getElementById('preloader-counter');
+    const preloaderLiquid = document.getElementById('preloader-liquid');
+    const loaderValueObj = { value: 0 };
+
+    const preloaderTimeline = gsap.timeline({
+      onComplete: () => {
+        // Core Entrance trigger sequence directly following completion parameters
+        initializeHeroEntranceSequencing();
+      }
+    });
+
+    // Animate structural object value properties tracking loading counter percentages
+    preloaderTimeline.to(loaderValueObj, {
+      value: 100,
+      duration: 2.8,
+      ease: "power2.out",
+      onUpdate: () => {
+        const roundedProgress = Math.floor(loaderValueObj.value);
+        preloaderCounter.innerText = roundedProgress < 10 ? '0' + roundedProgress : roundedProgress;
+        // Map the container progress directly down matching inverted clipping heights
+        preloaderLiquid.style.top = `${100 - (roundedProgress * 0.94)}%`;
+      }
+    });
+
+    // Page Exit Transition via smooth GSAP clip-path page transition
+    preloaderTimeline.to('#preloader', {
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+      duration: 1.2,
+      ease: "power4.inOut"
+    });
+    preloaderTimeline.set('#preloader', { display: 'none' });
+
+
+    // HERO SECTION ENTERING STAGE SEPARATE TIMELINE CONTROL
+    function initializeHeroEntranceSequencing() {
+      // Split Type Text Extraction Instantiation Setup
+      const targetTitleElement = document.getElementById('hero-title');
+      const textSplitInstance = new SplitType(targetTitleElement, { types: 'chars, words' });
+      
+      const entranceTimeline = gsap.timeline();
+
+      // Sticky glassmorphic navbar fade-down transition
+      entranceTimeline.fromTo('#main-header', 
+        { y: -30, opacity: 0, backgroundColor: 'transparent' },
+        { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
+      );
+
+      // Split text character layout reveals
+      entranceTimeline.from(textSplitInstance.chars, {
+        opacity: 0,
+        y: 40,
+        rotateX: -30,
+        stagger: 0.02,
+        duration: 0.8,
+        ease: "back.out(1.7)"
+      }, "-=0.6");
+
+      // Card asset entrance visual scaling structures
+      entranceTimeline.from('#hero-image-container', {
+        opacity: 0,
+        scale: 0.9,
+        y: 50,
+        duration: 1.2,
+        ease: "power4.out"
+      }, "-=0.8");
+
+      entranceTimeline.from('#hero-floating-card', {
+        opacity: 0,
+        x: -40,
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.6");
+
+      // Custom continuous linear dynamic loop controlling the scroll tracking marker line line
+      gsap.fromTo('#scroll-line-anim', 
+        { top: '-100%' }, 
+        { top: '100%', duration: 1.8, repeat: -1, ease: 'power1.inOut' }
+      );
+
+      // Activate interactive floating mouse movement effects over Hero Element Cards
+      initializeHeroMouseParallaxParallax();
+    }
+
+
+    // FLOATING JS MOUSE DRIVEN ASSET PARALLAX ENGINE MECHANICS
+    function initializeHeroMouseParallaxParallax() {
+      const parentContainer = document.getElementById('hero');
+      const masterCard = document.getElementById('hero-image-container');
+      const offsetWidget = document.getElementById('hero-floating-card');
+
+      parentContainer.addEventListener('mousemove', (e) => {
+        const bounds = parentContainer.getBoundingClientRect();
+        const pointerX = e.clientX - bounds.left - (bounds.width / 2);
+        const pointerY = e.clientY - bounds.top - (bounds.height / 2);
+
+        // Adjust positioning variables mathematically by micro-fractions
+        gsap.to(masterCard, {
+          x: pointerX * 0.03,
+          y: pointerY * 0.03,
+          duration: 0.6,
+          ease: "power2.out"
+        });
+
+        gsap.to(offsetWidget, {
+          x: pointerX * -0.05,
+          y: pointerY * -0.05,
+          duration: 0.6,
+          ease: "power2.out"
+        });
+      });
+    }
+
+
+    // SCROLL BAR HEADER TRACK TRANSFORMATION SHIFTS
+    ScrollTrigger.create({
+      start: "top -60px",
+      onEnter: () => {
+        document.getElementById('main-header').classList.add('bg-cream/80', 'backdrop-blur-md', 'py-4', 'shadow-md');
+        document.getElementById('main-header').classList.remove('py-6');
+      },
+      onLeaveBack: () => {
+        document.getElementById('main-header').classList.remove('bg-cream/80', 'backdrop-blur-md', 'py-4', 'shadow-md');
+        document.getElementById('main-header').classList.add('py-6');
+      }
+    });
+
+
+    // ABOUT SECTION SMOOTH IMAGE MASK REVEAL WIPE ON SCROLL
+    gsap.to('#about-mask-trigger', {
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+      duration: 1.6,
+      ease: 'power3.inOut',
+      scrollTrigger: {
+        trigger: '#about-mask-trigger',
+        start: 'top 75%',
+        end: 'bottom 25%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+
+    // LIVE DATA COUNTER ARRAYS SEQUENCING CONFIGURATION
+    ScrollTrigger.create({
+      trigger: '#stats-counter-trigger',
+      start: 'top 82%',
+      onEnter: () => {
+        document.querySelectorAll('.js-counter-val').forEach(counterElement => {
+          const finalValue = parseInt(counterElement.getAttribute('data-target'), 10);
+          const counterTrackingObj = { value: 0 };
+          
+          gsap.to(counterTrackingObj, {
+            value: finalValue,
+            duration: 2.2,
+            ease: 'power3.out',
+            onUpdate: () => {
+              counterElement.innerText = Math.floor(counterTrackingObj.value);
+            }
+          });
+        });
+      }
+    });
+
+
+    // INTERACTIVE SEAMLESS FILTERING NAVIGATION SYSTEM MENU GRID
+    const filteringTabs = document.querySelectorAll('.menu-tab-btn');
+    const catalogCards = document.querySelectorAll('.menu-item');
+
+    filteringTabs.forEach(activeTab => {
+      activeTab.addEventListener('click', (e) => {
+        // Toggle Active Component Navigation Classes UI
+        filteringTabs.forEach(t => {
+          t.classList.remove('active', 'bg-espresso', 'text-cream');
+          t.classList.add('border-espresso/20', 'text-espresso');
+          t.setAttribute('aria-selected', 'false');
+        });
+        activeTab.classList.add('active', 'bg-espresso', 'text-cream');
+        activeTab.classList.remove('border-espresso/20', 'text-espresso');
+        activeTab.setAttribute('aria-selected', 'true');
+
+        const activeFilterCriteria = activeTab.getAttribute('data-filter');
+
+        // GSAP Unified Card Fade Out Scale Down
+        gsap.to(catalogCards, {
+          opacity: 0,
+          scale: 0.95,
+          y: 10,
+          duration: 0.3,
+          onComplete: () => {
+            catalogCards.forEach(cardItem => {
+              const elementTag = cardItem.getAttribute('data-category');
+              if(activeFilterCriteria === 'all' || elementTag === activeFilterCriteria) {
+                cardItem.classList.remove('hidden-item');
+              } else {
+                cardItem.classList.add('hidden-item');
+              }
+            });
+
+            // Trigger GSAP Re-entrance animation sequence across matching sets
+            const accessibleCards = document.querySelectorAll('.menu-item:not(.hidden-item)');
+            gsap.fromTo(accessibleCards, 
+              { opacity: 0, scale: 0.95, y: 15 },
+              { opacity: 1, scale: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' }
+            );
+            
+            // Recalculate ScrollTrigger parameters dynamically
+            ScrollTrigger.refresh();
+          }
+        });
+      });
+    });
+
+
+    // HORIZONTAL PINNED GALLERY MARQUEE DRIVEN BY SCROLLTRIGGER
+    const horizontalGalleryTrack = document.getElementById('gallery-pin-track');
+    
+    // Horizontal tracking translation calculation logic
+    function computeHorizontalTranslationDistance() {
+      return -(horizontalGalleryTrack.scrollWidth - window.innerWidth);
+    }
+
+    gsap.to(horizontalGalleryTrack, {
+      x: computeHorizontalTranslationDistance,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#gallery",
+        pin: true,
+        scrub: 1,
+        start: "top top",
+        end: () => `+=${horizontalGalleryTrack.scrollWidth}`,
+        invalidateOnRefresh: true // Re-maps calculations accurately on display orientation size structural scale shifts
+      }
+    });
+
+
+    // MAGNETIC EFFECT UTIL ENGINE ASSEMBLY FOR CTAS & NAVIGATION INTERACTIVE TARGETS
+    const magneticInteractiveTargets = document.querySelectorAll('.magnetic');
+    
+    magneticInteractiveTargets.forEach(target => {
+      target.addEventListener('mousemove', function(e) {
+        const spacePosition = this.getBoundingClientRect();
+        // Calculate mouse positioning deltas relative directly to components center axis metrics
+        const axisX = e.clientX - spacePosition.left - (spacePosition.width / 2);
+        const axisY = e.clientY - spacePosition.top - (spacePosition.height / 2);
+
+        gsap.to(this, {
+          x: axisX * 0.45,
+          y: axisY * 0.45,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+
+      target.addEventListener('mouseleave', function() {
+        gsap.to(this, {
+          x: 0,
+          y: 0,
+          duration: 0.5,
+          ease: "elastic.out(1, 0.3)"
+        });
+      });
+    });
+
+
+    // NEWSLETTER INTERFACE SUB-BORDER ANIMATIONS TRACKING INTERACTIONS
+    const newsletterInput = document.querySelector('#newsletter-form input');
+    const newsletterLine = document.getElementById('newsletter-line');
+
+    newsletterInput.addEventListener('focus', () => {
+      gsap.to(newsletterLine, { scaleX: 1, duration: 0.4, ease: 'power2.out' });
+    });
+    newsletterInput.addEventListener('blur', () => {
+      if(newsletterInput.value === "") {
+        gsap.to(newsletterLine, { scaleX: 0, duration: 0.4, ease: 'power2.in' });
+      }
+    });
+
+
+    // TOAST NOTIFICATION ENGINE PIPELINE CALL INTERPRETATIONS
+    const toastWidget = document.getElementById('toast-notification');
+    const toastTitle = document.getElementById('toast-title');
+    const toastMessage = document.getElementById('toast-message');
+
+    function executeDisplayToastMessage(title, text) {
+      toastTitle.innerText = title;
+      toastMessage.innerText = text;
+
+      const toastTimeline = gsap.timeline();
+      toastTimeline.to(toastWidget, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 0.5, ease: 'power3.out' });
+      toastTimeline.to(toastWidget, { opacity: 0, y: 15, pointerEvents: 'none', duration: 0.5, ease: 'power3.in' }, "+=3.5");
+    }
+
+    // Capture Booking Form Submissions System Operations
+    document.getElementById('reservation-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const clientName = document.getElementById('form-name').value;
+      executeDisplayToastMessage("Allocation Processed", `Greetings ${clientName}. Our concierge is verifying system availability.`);
+      e.target.reset();
+    });
+
+    // Capture Newsletter Input Form Submissions System Operations
+    document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      executeDisplayToastMessage("Journal Synced", "Your remote data profile access has been successfully authorized.");
+      e.target.reset();
+      gsap.to(newsletterLine, { scaleX: 0, duration: 0.4 });
+    });
+
+
+    // SMOOTH SCROLL BACK TO TOP ENGINE INTERACTION TRIGGER ARCHITECTURE
+    document.getElementById('back-to-top-btn').addEventListener('click', () => {
+      lenis.scrollTo(0, { duration: 1.8, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    });
+  </script>
+</body>
+</html>
